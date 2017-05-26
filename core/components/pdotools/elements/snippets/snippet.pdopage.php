@@ -188,15 +188,31 @@ if (empty($data)) {
                 }
             }
         }
-
+        
         if (!empty($setMeta) && !$isAjax) {
+            $modx->regClientStartupHTMLBlock('<link rel="canonical" href="' . $url . '"/>');
             if ($page > 1) {
                 $modx->regClientStartupHTMLBlock('<link rel="prev" href="' . $pdoPage->makePageLink($url,
                         $page - 1) . '"/>');
-            }
+                //set [[+page.prevlink]] placeholder
+                $modx->setPlaceholder('page.prevlink','' . $pdoPage->makePageLink($url,$page - 1) . '');
+            } 
+            
             if ($page < $pageCount) {
                 $modx->regClientStartupHTMLBlock('<link rel="next" href="' . $pdoPage->makePageLink($url,
                         $page + 1) . '"/>');
+                //set [[+page.nextlink]] placeholder
+                $modx->setPlaceholder('page.nextlink','' . $pdoPage->makePageLink($url,$page + 1) . '');
+            }
+            
+            //if current page is already at max set [[+page.nextlink]] placeholder as current page
+            if ($page == $pageCount) {
+                $modx->setPlaceholder('page.nextlink','' . $pdoPage->makePageLink($url,$page) . '');
+            }
+            //if current page is 1 set [[+page.prevlink]] placeholder as current page
+            if ($page == 1) {
+                //[[+page.prevlink]] placeholder
+                $modx->setPlaceholder('page.prevlink','' . $pdoPage->makePageLink($url,$page) . '');
             }
         }
 
